@@ -1,0 +1,15 @@
+.gradle/
+build/
+logs/
+bin/
+bin_client/
+*.log
+*.log.gz
+client_payload.zip
+CasxDuoisClient.exe
+CasxDuois.zip
+__pycache__/
+*.pyc
+/OptiFine-1.12.2_HD_U_G5.jar
+/launchwrapper-2.2.jar
+backup_ui_20261027/

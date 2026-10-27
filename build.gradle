@@ -1,0 +1,90 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
+}
+
+group = 'com.casxduois.client'
+version = '1.0.0-LITE'
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://repo.spongepowered.org/maven/' }
+    maven { url = 'https://libraries.minecraft.net/' }
+}
+
+compileJava {
+    options.encoding = 'UTF-8'
+}
+
+dependencies {
+    // SpongePowered Mixin for low-level bytecode transformation
+    implementation 'org.spongepowered:mixin:0.8.5'
+
+    // Google GSON for fast json config & account manager
+    implementation 'com.google.code.gson:gson:2.8.9'
+
+    // Lightweight modern logging (Provided by Minecraft runtime)
+    compileOnly 'org.apache.logging.log4j:log4j-api:2.17.1'
+    compileOnly 'org.apache.logging.log4j:log4j-core:2.17.1'
+
+    // LWJGL 2 OpenGL bindings (Minecraft 1.12.2 standard)
+    compileOnly 'org.lwjgl.lwjgl:lwjgl:2.9.4-nightly-20150209'
+    compileOnly 'org.lwjgl.lwjgl:lwjgl_util:2.9.4-nightly-20150209'
+
+    // Minecraft Libraries for compilation
+    compileOnly 'com.mojang:authlib:1.5.25'
+    compileOnly 'com.mojang:realms:1.10.22'
+    compileOnly 'io.netty:netty-all:4.1.9.Final'
+    compileOnly 'commons-io:commons-io:2.5'
+    compileOnly 'net.minecraft:launchwrapper:1.12'
+
+    // Forge 1.12.2 + Minecraft deobfuscated mapped jar from local cache
+    def userHome = System.getProperty("user.home").replace('\\', '/')
+    def forgeMappedJar = "${userHome}/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.12.2-14.23.5.2860_mapped_stable_39-1.12/forge-1.12.2-14.23.5.2860_mapped_stable_39-1.12.jar"
+    compileOnly files(forgeMappedJar)
+}
+
+jar {
+    manifest {
+        attributes(
+            'FMLCorePlugin': 'com.casxduois.client.CasxDuoisCoreMod',
+            'FMLCorePluginContainsFMLMod': 'true',
+            'ForceLoadAsMod': 'true',
+            'MixinConfigs': 'mixins.casxduois.json',
+            'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker'
+        )
+    }
+}
+
+shadowJar {
+    archiveClassifier.set('all')
+    manifest {
+        inheritFrom project.tasks.jar.manifest
+    }
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+    exclude '**/module-info.class'
+    exclude 'META-INF/versions/**'
+    exclude '**/MixinLaunchPlugin.class'
+    exclude '**/MixinTransformationService.class'
+    exclude '**/ContainerHandleModLauncherEx*.class'
+}
+
+task reobfJar(type: JavaExec) {
+    dependsOn shadowJar
+    def userHome = System.getProperty("user.home").replace('\\', '/')
+    def ss = "${userHome}/.gradle/caches/forge_gradle/maven_downloader/net/md-5/SpecialSource/1.11.0/SpecialSource-1.11.0-shaded.jar"
+    def forgeMappedJar = "${userHome}/.gradle/caches/forge_gradle/minecraft_user_repo/net/minecraftforge/forge/1.12.2-14.23.5.2860_mapped_stable_39-1.12/forge-1.12.2-14.23.5.2860_mapped_stable_39-1.12.jar"
+    def tsrg = "${userHome}/.gradle/caches/forge_gradle/minecraft_user_repo/de/oceanlabs/mcp/mcp_config/1.12.2-20200226.224830/srg_to_stable_39-1.12.tsrg"
+    def inJar = tasks.shadowJar.archiveFile.get().asFile.absolutePath
+    def outJar = inJar.replace('-all.jar', '.jar')
+
+    classpath = files(ss, forgeMappedJar)
+    main = 'net.md_5.specialsource.SpecialSource'
+    args = ['--in-jar', inJar, '--out-jar', outJar, '--srg-in', tsrg, '--reverse', '--live']
+}
+
+build.dependsOn reobfJar
+
