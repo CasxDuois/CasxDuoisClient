@@ -1,0 +1,25 @@
+{
+  "required": true,
+  "minVersion": "0.8.5",
+  "package": "com.casxduois.client.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "mixins.casxduois.refmap.json",
+  "mixins": [
+    "MixinMinecraft",
+    "MixinEntityRenderer",
+    "MixinGuiDisconnected",
+    "MixinSoundManager",
+    "MixinRenderManager",
+    "MixinTileEntityRendererDispatcher",
+    "MixinEffectRenderer",
+    "MixinGuiConnecting",
+    "MixinGuiScreen",
+    "MixinGuiMultiplayer",
+    "MixinNetworkManager"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
