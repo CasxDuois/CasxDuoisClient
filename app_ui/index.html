@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minecraft Client</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Ambient Atmospheric Mesh (Monochrome Obsidian) -->
+  <div class="bg-mesh"></div>
+
+  <!-- Title Bar -->
+  <header class="titlebar" id="titlebar">
+    <div class="title-left">
+      <img src="logo.png" alt="CasxDuois" class="title-logo-img">
+      <span class="title-text">Minecraft Client</span>
+    </div>
+    <div class="window-controls">
+      <button class="win-btn" id="btn-min" title="Thu nhỏ">─</button>
+      <button class="win-btn win-close" id="btn-close" title="Đóng">✕</button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-container">
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="logo-wrapper">
+        <img src="logo.png" alt="CasxDuois Logo" class="hero-logo" draggable="false">
+        <div class="logo-glow"></div>
+      </div>
+      <h1 class="hero-title">CasxDuois</h1>
+    </section>
+
+    <!-- Glassmorphic Launcher Card -->
+    <section class="launcher-card">
+      <!-- [Hàng 1] Quản lý Tài khoản (2 Cột cân đối) -->
+      <div class="grid-2-col">
+        <!-- Cột 1: Tài khoản đã lưu (Chọn & Xóa) -->
+        <div class="form-group">
+          <label class="form-label" for="select-accounts">Tài khoản</label>
+          <div class="input-action-row">
+            <div class="select-wrapper flex-grow">
+              <select id="select-accounts" class="custom-select">
+                <option value="">(Chưa có tài khoản)</option>
+              </select>
+            </div>
+            <button class="btn btn-icon-danger" id="btn-del-account" title="Xóa tài khoản đang chọn">Xóa</button>
+          </div>
+        </div>
+
+        <!-- Cột 2: Thêm tài khoản mới -->
+        <div class="form-group">
+          <label class="form-label" for="txt-username">Thêm tài khoản</label>
+          <div class="input-action-row">
+            <div class="input-wrapper flex-grow">
+              <input type="text" id="txt-username" class="custom-input" placeholder="Nhập tên nhân vật..." spellcheck="false" autocomplete="off">
+            </div>
+            <button class="btn btn-secondary" id="btn-add-nick">Thêm</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- [Hàng 2] Cài đặt Game: Phiên bản & Bộ nhớ RAM (2 Cột cân đối) -->
+      <div class="grid-2-col">
+        <!-- Cột 1: Phiên bản -->
+        <div class="form-group">
+          <label class="form-label" for="select-mode">Phiên bản</label>
+          <div class="select-wrapper">
+            <select id="select-mode" class="custom-select">
+              <option value="0">Forge 1.12.2</option>
+              <option value="1">Optifine 1.12.2</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Cột 2: RAM Slider -->
+        <div class="form-group">
+          <div class="label-with-value">
+            <label class="form-label" for="slider-ram">Bộ nhớ RAM</label>
+            <span class="val-badge" id="lbl-ram-val">1024 MB</span>
+          </div>
+          <div class="slider-wrapper">
+            <input type="range" id="slider-ram" class="custom-slider" min="512" max="4096" step="128" value="1024">
+            <div class="slider-ticks">
+              <span>512M</span>
+              <span>1024M</span>
+              <span>2048M</span>
+              <span>4096M</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- [Hàng 3] Tùy chọn & Tiện ích -->
+      <div class="options-toolbar-row">
+        <label class="custom-checkbox">
+          <input type="checkbox" id="chk-auto-close" checked>
+          <span class="checkbox-mark"></span>
+          <span class="checkbox-label">Tự động đóng Launcher sau khi mở game</span>
+        </label>
+
+        <div class="quick-toolbar">
+          <button class="btn btn-toolbar" id="btn-open-folder">Thư mục game</button>
+          <button class="btn btn-toolbar" id="btn-guide">Hướng dẫn & phím tắt</button>
+        </div>
+      </div>
+
+      <!-- [Hàng 4] Nút Chơi Ngay ở đáy Card -->
+      <button class="btn btn-play" id="btn-play">
+        <span class="play-text">Chơi ngay</span>
+      </button>
+    </section>
+  </main>
+
+  <!-- Feature Guide Modal -->
+  <div class="modal-overlay" id="guide-modal" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-row">
+          <h3>Hướng dẫn & Phím tắt</h3>
+        </div>
+        <button class="modal-close" id="btn-close-guide" title="Đóng">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="guide-item feature-highlight">
+          <div class="guide-badge">Mới</div>
+          <h4>Tăng Sáng (Phím B)</h4>
+          <p>Tăng độ sáng tối đa để nhìn rõ mọi vật trong hang sâu và ban đêm mà không cần cắm đuốc. Có thể bật tắt nhanh bằng phím <strong>B</strong>.</p>
+        </div>
+        <div class="guide-grid">
+          <div class="guide-card">
+            <h4>Giới hạn Render</h4>
+            <p>Tạm ẩn quái vật, động vật và rương kho ở xa để giảm giật lag và ổn định khung hình.</p>
+          </div>
+          <div class="guide-card">
+            <h4>Hạ tài nguyên khi treo</h4>
+            <p>Tự động hạ FPS, giảm tải GPU, CPU và dọn dẹp RAM khi bạn ẩn tab hoặc không thao tác máy.</p>
+          </div>
+          <div class="guide-card">
+            <h4>Quản lý Mod</h4>
+            <p>Dễ dàng bật hoặc tắt từng file mod .jar và mở thư mục mods ngay trong giao diện cài đặt.</p>
+          </div>
+          <div class="guide-card">
+            <h4>Cài đặt nhanh (Right Shift)</h4>
+            <p>Bấm phím <strong>Right Shift</strong> khi đang trong game để mở bảng điều khiển và tùy chỉnh tính năng.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status Bar Footer -->
+  <footer class="statusbar">
+    <span id="lbl-status" style="display: none;"></span>
+    <div class="status-right">
+      <span class="version-label">v1.0.0</span>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
